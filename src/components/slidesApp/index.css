@@ -1,0 +1,36 @@
+.u-list {
+  list-style-type: none;
+}
+.list-color {
+  color: red;
+  font-weight: bold;
+}
+.main-container {
+  display: flex;
+  font-family: bree serif;
+}
+.main-slide-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid orange;
+  border-radius: 10px;
+}
+.new-buttons {
+  font-family: bree serif;
+  font-weight: bold;
+  font-size: 15px;
+  margin: 10px;
+  background-color: transparent;
+  border: 2px solid blue;
+  padding: 8px;
+}
+
+.each-list {
+  border: 2px solid green;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+}
