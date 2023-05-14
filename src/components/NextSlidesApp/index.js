@@ -63,8 +63,73 @@ class NextSlidesApp extends Component {
     descText: initialSlidesList[0].description,
   }
 
+  onKeyDown = event => {
+    if (event.key === 'Enter') {
+      this.setState({headCondition: false})
+    }
+  }
+
+  onKeyDownDesc = event => {
+    if (event.key === 'Enter') {
+      this.setState({descCondition: false})
+    }
+  }
+
+  onClickHeadingCondition = () => {
+    this.setState({headCondition: true})
+  }
+
+  onClickDescCondition = () => {
+    this.setState({descCondition: true})
+  }
+
+  onChangeHeading = event => {
+    const {activeId, slidesList} = this.state
+    console.log(slidesList)
+    this.setState({headingText: event.target.value})
+
+    // const changeSlide = slidesList.find(each => each.id === activeSlide)
+    // changeSlide.heading = event.target.value
+    this.setState(prevState => ({
+      slidesList: prevState.slidesList.map(eachItem => {
+        if (eachItem.id === activeId) {
+          const slide = event.target.value
+          return {...eachItem, heading: slide}
+        }
+        return eachItem
+      }),
+    }))
+  }
+
+  onChangeDescription = event => {
+    const {activeId, slidesList} = this.state
+    console.log(slidesList)
+    this.setState({descText: event.target.value})
+
+    // const changeSlide = slidesList.find(each => each.id === activeSlide)
+    // changeSlide.heading = event.target.value
+    this.setState(prevState => ({
+      slidesList: prevState.slidesList.map(eachItem => {
+        if (eachItem.id === activeId) {
+          const slide = event.target.value
+          return {...eachItem, description: slide}
+        }
+        return eachItem
+      }),
+    }))
+  }
+
   onClickAddSlide = () => {
-    const {slidesList} = this.state
+    const {slidesList, activeId} = this.state
+
+    const index = slidesList.findIndex(each => {
+      if (each.id === activeId) {
+        return true
+      }
+      return false
+    })
+
+    console.log(index)
 
     const newSlideObj = {
       id: 'cc6e233c-a063-11ec-b909-0242ac120003',
@@ -73,51 +138,58 @@ class NextSlidesApp extends Component {
       num: 8,
     }
 
-    this.setState(prevState => ({
-      slidesList: [...prevState.slidesList, newSlideObj],
-    }))
+    slidesList.splice(index + 1, 0, newSlideObj)
+    this.setState({
+      slidesList,
+      activeId: newSlideObj.id,
+      headingText: newSlideObj.heading,
+      descText: newSlideObj.description,
+    })
+
+    // this.setState(prevState => ({
+    // slidesList: [...prevState.slidesList, newSlideObj],
+    // }))
   }
 
-  activeSlide = id => {
-    this.setState({activeId: id})
+  activeSlide = slideData => {
+    this.setState({
+      activeId: slideData.id,
+      headingText: slideData.heading,
+      descText: slideData.description,
+      headCondition: false,
+      descCondition: false,
+    })
   }
 
-  showActiveTab = () => {
-    const {activeId, slidesList, headCondition, descCondition} = this.state
-    const slideInfo = slidesList.find(eachSlide => eachSlide.id === activeId)
-
-    const {heading, description} = slideInfo
-
-    const onClickHeading = () => {
-      this.setState({headCondition: true})
-    }
-
-    const onHeadingChange = event => {
-      slideInfo.heading = event.target.value
-      this.setState({slidesList})
-    }
-
+  showRightSlide = () => {
+    const {headingText, descText, headCondition, descCondition} = this.state
     return (
       <div className="slide-info-container">
         {!headCondition ? (
-          <h1 className="info-heading" onClick={onClickHeading}>
-            {heading}{' '}
+          <h1 className="info-heading" onClick={this.onClickHeadingCondition}>
+            {headingText}
           </h1>
         ) : (
           <input
             type="text"
-            className="heading-input"
-            onChange={onHeadingChange}
+            onChange={this.onChangeHeading}
+            onKeyDown={this.onKeyDown}
           />
         )}
-        <p className="info-description">{description}</p>
+        {!descCondition ? (
+          <p className="info-description" onClick={this.onClickDescCondition}>
+            {descText}
+          </p>
+        ) : (
+          <input
+            type="text"
+            onChange={this.onChangeDescription}
+            onKeyDown={this.onKeyDownDesc}
+          />
+        )}
       </div>
     )
   }
-
-  changeHeading = () => {}
-
-  changeDesc = () => {}
 
   render() {
     const {slidesList, activeId} = this.state
@@ -125,33 +197,30 @@ class NextSlidesApp extends Component {
     return (
       <>
         <Header />
-        <div className="main-container">
-          <button
-            type="button"
-            className="new-button"
-            onClick={this.onClickAddSlide}
-          >
-            <img
-              src="https://assets.ccbp.in/frontend/react-js/nxt-slides/nxt-slides-plus-icon.png"
-              alt="new plus icon"
-              className="new-button-image"
-            />
-            <p className="new-text">New</p>
-          </button>
-          <div className="main-slides-container">
-            <ol className="slide-list-container">
-              {slidesList.map(eachSlide => (
-                <Slide
-                  slideData={eachSlide}
-                  key={eachSlide.id}
-                  activeSlide={this.activeSlide}
-                  isActive={eachSlide.id === activeId}
-                  changeHeading={this.changeHeading()}
-                  changeDesc={this.changeDesc()}
-                />
-              ))}
-            </ol>
-          </div>
+        <button
+          type="button"
+          className="new-button"
+          onClick={this.onClickAddSlide}
+        >
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/nxt-slides/nxt-slides-plus-icon.png"
+            alt="new plus icon"
+            className="new-button-image"
+          />
+          <p className="new-text">New</p>
+        </button>
+        <div className="main-slides-container">
+          <ol className="slide-list-container">
+            {slidesList.map(eachSlide => (
+              <Slide
+                slideData={eachSlide}
+                key={eachSlide.id}
+                activeSlide={this.activeSlide}
+                isActive={eachSlide.id === activeId}
+              />
+            ))}
+          </ol>
+          {this.showRightSlide()}
         </div>
       </>
     )

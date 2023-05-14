@@ -4,6 +4,6 @@ import SlidesApp from './components/slidesApp'
 
 import './App.css'
 
-const App = () => <SlidesApp />
+const App = () => <NextSlidesApp />
 
 export default App

@@ -28,18 +28,22 @@
 }
 
 .main-slides-container {
+  height: 70vh;
   padding: 20px;
   display: flex;
-  gap: 100px;
+  gap: 50px;
 }
 
 .slide-list-container {
-  overflow-y: none;
+  height: 800px;
+  width: 400px;
+  list-style-type: upper-roman;
+  overflow-y: scroll;
 }
 
 .slide-info-container {
   width: 80%;
-  height: 50vh;
+  height: 80vh;
   background-image: url('https://assets.ccbp.in/frontend/react-js/nxt-slides/nxt-slides-bg.png ');
   box-shadow: 0px 0px 0px 1px #475569;
   border-radius: 10px;

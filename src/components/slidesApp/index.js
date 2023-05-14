@@ -55,7 +55,37 @@ class SlidesApp extends Component {
     activeSlide: initialSlidesList[0].id,
     heading: initialSlidesList[0].heading,
     desc: initialSlidesList[0].description,
-    list: initialSlidesList,
+    headCond: false,
+    descCond: false,
+  }
+
+  onKeyDown = event => {
+    const {slidesList} = this.state
+    if (event.key === 'Enter') {
+      this.setState({headCond: false})
+    }
+  }
+
+  onEditHeading = () => {
+    this.setState({headCond: true})
+  }
+
+  onChangeHeading = event => {
+    const {activeSlide, slidesList} = this.state
+    console.log(slidesList)
+    this.setState({heading: event.target.value})
+
+    // const changeSlide = slidesList.find(each => each.id === activeSlide)
+    // changeSlide.heading = event.target.value
+    this.setState(prevState => ({
+      slidesList: prevState.slidesList.map(eachItem => {
+        if (eachItem.id === activeSlide) {
+          const slide = event.target.value
+          return {...eachItem, heading: slide}
+        }
+        return eachItem
+      }),
+    }))
   }
 
   showSlides = () => {
@@ -84,18 +114,6 @@ class SlidesApp extends Component {
     })
   }
 
-  onClickAdd = () => {
-    this.setState(prevState => ({
-      list: prevState.list.filter(each => {
-        const a = each.num === 4
-        if (a) {
-          return {...each, num: 100}
-        }
-        return {...each}
-      }),
-    }))
-  }
-
   onClickAddSlide = () => {
     const {slidesList} = this.state
 
@@ -112,7 +130,7 @@ class SlidesApp extends Component {
   }
 
   render() {
-    const {heading, desc, list} = this.state
+    const {heading, desc, list, headCond, descCond} = this.state
 
     // console.log(list)
 
@@ -129,8 +147,20 @@ class SlidesApp extends Component {
         <div className="main-container">
           <ul className="u-list">{this.showSlides()}</ul>
           <div className="main-slide-container">
-            <h1>{heading}</h1>
-            <p>{desc}</p>
+            {headCond ? (
+              <input
+                type="text"
+                onChange={this.onChangeHeading}
+                onKeyDown={this.onKeyDown}
+              />
+            ) : (
+              <h1 onClick={this.onEditHeading}>{heading}</h1>
+            )}
+            {descCond ? (
+              <input type="text" onChange={this.onChangeDescription} />
+            ) : (
+              <p onClick={this.onEditParaGraph}>{desc}</p>
+            )}
           </div>
         </div>
       </>
